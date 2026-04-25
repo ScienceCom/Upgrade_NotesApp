@@ -35,6 +35,7 @@ kotlin {
             implementation(libs.compose.uiToolingPreview)
             implementation(libs.androidx.activity.compose)
             implementation("app.cash.sqldelight:android-driver:2.0.1")
+            implementation("io.insert-koin:koin-android:3.5.3")
         }
         commonMain.dependencies {
             implementation(libs.compose.runtime)
@@ -51,6 +52,8 @@ kotlin {
             implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.5.0")
             implementation("org.jetbrains.compose.material:material-icons-extended:1.7.3")
             implementation(compose.materialIconsExtended)
+            implementation("io.insert-koin:koin-core:3.5.3")
+            implementation("io.insert-koin:koin-compose:1.1.2")
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)

@@ -1,6 +1,6 @@
 package com.example.notesapp.database
 import app.cash.sqldelight.db.SqlDriver
 
-expect class DatabaseDriverFactory(context: Any) { // Pastikan 'Any'
+expect class DatabaseDriverFactory(context: Any) {
     fun createDriver(): SqlDriver
 }
