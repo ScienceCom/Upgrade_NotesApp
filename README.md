@@ -1,48 +1,68 @@
-This is a Kotlin Multiplatform project targeting Android, iOS, Desktop (JVM).
+# Notes KMP (Kotlin Multiplatform) - CRUD App
 
-* [/composeApp](./composeApp/src) is for code that will be shared across your Compose Multiplatform applications.
-  It contains several subfolders:
-  - [commonMain](./composeApp/src/commonMain/kotlin) is for code that’s common for all targets.
-  - Other folders are for Kotlin code that will be compiled for only the platform indicated in the folder name.
-    For example, if you want to use Apple’s CoreCrypto for the iOS part of your Kotlin app,
-    the [iosMain](./composeApp/src/iosMain/kotlin) folder would be the right place for such calls.
-    Similarly, if you want to edit the Desktop (JVM) specific part, the [jvmMain](./composeApp/src/jvmMain/kotlin)
-    folder is the appropriate location.
+Aplikasi catatan sederhana yang dibangun menggunakan Kotlin Multiplatform (KMP). Proyek ini mendemonstrasikan implementasi *shared logic* antara Android dan platform lainnya, dengan fokus pada Dependency Injection, Database Lokal, dan pemantauan status perangkat secara real-time.
 
-* [/iosApp](./iosApp/iosApp) contains iOS applications. Even if you’re sharing your UI with Compose Multiplatform,
-  you need this entry point for your iOS app. This is also where you should add SwiftUI code for your project.
+## 🏗️ Arsitektur Sistem
 
-### Build and Run Android Application
+Aplikasi ini menggunakan arsitektur Clean Architecture sederhana yang dipadukan dengan pola Expect/Actual untuk menangani fungsionalitas spesifik platform.
 
-To build and run the development version of the Android app, use the run configuration from the run widget
-in your IDE’s toolbar or build it directly from the terminal:
-- on macOS/Linux
-  ```shell
-  ./gradlew :composeApp:assembleDebug
-  ```
-- on Windows
-  ```shell
-  .\gradlew.bat :composeApp:assembleDebug
-  ```
 
-### Build and Run Desktop (JVM) Application
 
-To build and run the development version of the desktop app, use the run configuration from the run widget
-in your IDE’s toolbar or run it directly from the terminal:
-- on macOS/Linux
-  ```shell
-  ./gradlew :composeApp:run
-  ```
-- on Windows
-  ```shell
-  .\gradlew.bat :composeApp:run
-  ```
-
-### Build and Run iOS Application
-
-To build and run the development version of the iOS app, use the run configuration from the run widget
-in your IDE’s toolbar or open the [/iosApp](./iosApp) directory in Xcode and run it from there.
+### Komponen Utama:
+1.  **Shared Module (CommonMain):** Berisi logika bisnis, definisi database (SQLDelight), dan kontrak (expect) untuk fitur platform.
+2.  **Koin DI:** Digunakan sebagai pengatur dependensi (Dependency Injection) di seluruh aplikasi agar objek seperti Database dan NetworkMonitor dapat digunakan secara konsisten.
+3.  **SQLDelight:** Mesin database SQLite yang menghasilkan tipe data aman (Type-safe) untuk operasi CRUD.
+4.  **Expect/Actual:** Mekanisme untuk mengakses API spesifik platform (seperti informasi sensor atau konektivitas) dari kode bersama.
 
 ---
 
-Learn more about [Kotlin Multiplatform](https://www.jetbrains.com/help/kotlin-multiplatform-dev/get-started.html)…
+## 🛠️ Implementasi Fitur Sesuai Tugas
+
+Berikut adalah detail implementasi untuk memenuhi persyaratan teknis:
+
+### 1. Dependency Injection (Koin)
+Seluruh objek dalam aplikasi diatur melalui Koin. 
+- **AppModule:** Mengatur pembuatan instance `NotesDatabase`.
+- **PlatformModule:** Mengatur instance yang butuh `Context` Android seperti `DatabaseDriverFactory` dan `NetworkMonitor`.
+
+### 2. Device Info (Expect/Actual)
+Fitur ini mendeteksi informasi perangkat pengguna.
+- **Expect:** Mendefinisikan class `DeviceInfo` di `commonMain`.
+- **Actual:** Mengambil `android.os.Build.MODEL` di `androidMain`.
+- **UI:** Ditampilkan pada layar utama/settings untuk memberikan detail teknis perangkat kepada pengguna.
+
+### 3. Network Monitor (Expect/Actual)
+Memantau status koneksi internet secara real-time.
+- **Expect:** Kontrak untuk mendengarkan perubahan jaringan.
+- **Actual:** Menggunakan `ConnectivityManager` di Android.
+- **UI:** Indikator status (Online/Offline) ditampilkan secara dinamis di bagian atas aplikasi (Top Bar).
+
+### 4. Database Lokal (SQLDelight)
+Menyimpan catatan pengguna secara permanen.
+- Mendukung operasi: **Create** (Tambah), **Read** (Lihat & Cari), **Update** (Ubah), dan **Delete** (Hapus).
+- Sinkronisasi data menggunakan `Flow` sehingga UI otomatis terupdate saat data berubah.
+
+---
+
+## 🚀 Cara Menjalankan Proyek
+
+1.  Clone repository ini.
+2.  Buka di **Android Studio (version Ladybug atau yang lebih baru)**.
+3.  Pastikan plugin **Kotlin Multiplatform** sudah terinstall.
+4.  Pilih konfigurasi run `composeApp` dan jalankan di Emulator Android.
+
+## 📋 Teknologi yang Digunakan
+- **Kotlin Multiplatform**
+- **Compose Multiplatform** (UI Framework)
+- **Koin** (Dependency Injection)
+- **SQLDelight** (Local Persistence)
+- **Kotlin Coroutines & Flow** (Asynchronous Logic)
+
+## Screenshot
+<img src=".png" width="400" />
+<img src=".png" width="400" />
+<img src=".png" width="400" />
+<img src=".png" width="400" />
+<img src=".png" width="400" />
+<img src=".png" width="400" />
+<img src=".png" width="400" />
